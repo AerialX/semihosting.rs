@@ -1,0 +1,15 @@
+[package]
+name = "semihosting"
+version = "0.1.0"
+edition = "2018"
+build = "build.rs"
+
+categories = ["no-std", "embedded", "hardware-support"]
+
+[dependencies]
+bitflags = "^1.2.0"
+cstrptr = { version = "^0.1.0", default-features = false }
+
+[features]
+# cortex-m-compat = [] # TODO?
+unstable = [] # TODO make inline asm optional!
