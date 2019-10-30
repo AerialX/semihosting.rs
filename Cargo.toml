@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2018"
 build = "build.rs"
 
-categories = ["no-std", "embedded", "hardware-support"]
+categories = ["no-std", "embedded", "hardware-support", "development-tools::debugging"]
 
 [dependencies]
 bitflags = "^1.2.0"
