@@ -117,7 +117,7 @@ bitflags::bitflags! {
 const MAGIC: &'static [u8] = b"SHFB"; // TODO check endianness
 
 pub use syscall::{syscall, syscall0};
-pub use print::{CharPrinter, print_str, print_cstr, print_char};
+pub use print::{CharPrinter, GlobalLogger, LOGGER, print_str, print_cstr, print_char};
 
 /// Normal application exit
 ///

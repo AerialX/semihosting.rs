@@ -9,6 +9,14 @@ use cstrptr::cstr;
 pub struct CharPrinter;
 
 impl fmt::Write for CharPrinter {
+    #[inline]
+    fn write_str(&mut self, s: &str) -> fmt::Result {
+        fmt::Write::write_str(&mut &*self, s)
+    }
+}
+
+impl<'a> fmt::Write for &'a CharPrinter {
+    #[inline]
     fn write_str(&mut self, s: &str) -> fmt::Result {
         print_str(s);
         Ok(())
@@ -30,11 +38,22 @@ fn print() {
     print!("{}", 5);
 }
 
+#[cfg(feature = "enable-logger")]
+pub static LOGGER: GlobalLogger = GlobalLogger::new();
+#[cfg(not(feature = "enable-logger"))]
+pub static LOGGER: CharPrinter = CharPrinter;
+
 pub struct GlobalLogger {
     handle: AtomicUsize,
 }
 
+#[cfg(feature = "const-default")]
+impl const_default::ConstDefault for GlobalLogger {
+    const DEFAULT: Self = GlobalLogger::new();
+}
+
 impl GlobalLogger {
+    #[inline]
     pub const fn new() -> Self {
         Self {
             handle: AtomicUsize::new(0),
@@ -52,6 +71,7 @@ impl GlobalLogger {
         })
     }
 
+    #[inline]
     pub fn log(&self, str: &str) -> Option<()> {
         self.handle()?.write_all::<()>(str.as_bytes()).ok()
     }
@@ -59,5 +79,12 @@ impl GlobalLogger {
     pub fn into_handle(self) -> Option<OwnedHandle> {
         let handle = self.handle();
         handle.map(OwnedHandle::from_handle)
+    }
+}
+
+impl<'a> fmt::Write for &'a GlobalLogger {
+    #[inline]
+    fn write_str(&mut self, s: &str) -> fmt::Result {
+        self.log(s).ok_or(fmt::Error)
     }
 }

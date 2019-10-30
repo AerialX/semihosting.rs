@@ -7,7 +7,7 @@ macro_rules! print {
         {
             use $crate::_export::core::fmt::Write;
             // failures aren't interesting to us
-            let _ = $crate::_export::core::write!($crate::CharPrinter, $($tt)*);
+            let _ = $crate::_export::core::write!(&$crate::LOGGER, $($tt)*);
         }
     };
 }
@@ -20,7 +20,7 @@ macro_rules! println {
     ($($tt:tt)*) => {
         {
             use $crate::_export::core::fmt::Write;
-            let _ = $crate::_export::core::writeln!($crate::CharPrinter, $($tt)*);
+            let _ = $crate::_export::core::writeln!(&$crate::LOGGER, $($tt)*);
         }
     };
 }

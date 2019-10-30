@@ -9,7 +9,9 @@ categories = ["no-std", "embedded", "hardware-support"]
 [dependencies]
 bitflags = "^1.2.0"
 cstrptr = { version = "^0.1.0", default-features = false }
+const-default = { version = "^0.1.0", git = "https://github.com/AerialX/const-default.rs", optional = true }
 
 [features]
 # cortex-m-compat = [] # TODO?
 unstable = [] # TODO make inline asm optional!
+enable-logger = [] # global logger fd
