@@ -10,8 +10,11 @@ categories = ["no-std", "embedded", "hardware-support", "development-tools::debu
 bitflags = "^1.2.0"
 cstrptr = { version = "^0.1.0", default-features = false }
 const-default = { version = "^0.1.0", git = "https://github.com/AerialX/const-default.rs", optional = true }
+ufmt = { version = "^0.1.0", optional = true }
+ufmt-write = { version = "^0.1.0", optional = true }
 
 [features]
 # cortex-m-compat = [] # TODO?
 unstable = [] # TODO make inline asm optional!
 enable-logger = [] # global logger fd
+enable-ufmt = ["ufmt", "ufmt-write"] # impl uWrite and export ufmt macro variants

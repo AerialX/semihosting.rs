@@ -5,6 +5,8 @@ use core::num::NonZeroU32;
 use cstrptr::CStr;
 
 mod macros;
+#[cfg(all(feature = "ufmt-write", feature = "ufmt"))]
+mod umacros;
 
 mod export;
 mod syscall;
@@ -17,6 +19,7 @@ pub mod _export {
 }
 
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Debug)]
+#[cfg_attr(feature = "ufmt", derive(ufmt::derive::uDebug))]
 #[repr(usize)]
 pub enum Syscall {
     Open = 1,
@@ -52,6 +55,7 @@ pub enum Syscall {
 }
 
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Debug)]
+#[cfg_attr(feature = "ufmt", derive(ufmt::derive::uDebug))]
 #[repr(usize)]
 pub enum Exception {
     // Hardware vector reason codes
@@ -91,6 +95,7 @@ impl From<Exception> for usize {
 
 #[repr(C)]
 #[derive(Copy, Clone, Debug, Default)]
+#[cfg_attr(feature = "ufmt", derive(ufmt::derive::uDebug))]
 pub struct HeapInfo {
     heap_base: Option<NonZeroU32>,
     heap_limit: Option<NonZeroU32>,

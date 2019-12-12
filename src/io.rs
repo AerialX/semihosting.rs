@@ -23,11 +23,13 @@ pub fn features() -> Handle {
 }
 
 #[derive(Copy, Clone, Debug)]
+#[cfg_attr(feature = "ufmt", derive(ufmt::derive::uDebug))]
 pub struct Handle {
     fd: NonZeroUsize,
 }
 
 #[derive(Copy, Clone, Debug)]
+#[cfg_attr(feature = "ufmt", derive(ufmt::derive::uDebug))]
 pub enum WriteAllError<E> {
     Io(E),
     Incomplete(usize),
@@ -91,6 +93,7 @@ impl Handle {
 }
 
 #[derive(Debug)]
+#[cfg_attr(feature = "ufmt", derive(ufmt::derive::uDebug))]
 pub struct OwnedHandle {
     handle: Handle,
 }

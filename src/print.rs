@@ -23,6 +23,27 @@ impl<'a> fmt::Write for &'a CharPrinter {
     }
 }
 
+#[cfg(feature = "ufmt-write")]
+impl ufmt_write::uWrite for CharPrinter {
+    type Error = core::convert::Infallible;
+
+    #[inline]
+    fn write_str(&mut self, s: &str) -> Result<(), Self::Error> {
+        ufmt_write::uWrite::write_str(&mut &*self, s)
+    }
+}
+
+#[cfg(feature = "ufmt-write")]
+impl<'a> ufmt_write::uWrite for &'a CharPrinter {
+    type Error = <CharPrinter as ufmt_write::uWrite>::Error;
+
+    #[inline]
+    fn write_str(&mut self, s: &str) -> Result<(), Self::Error> {
+        print_str(s);
+        Ok(())
+    }
+}
+
 pub fn print_str(str: &str) {
     for c in str.as_bytes() {
         write_char(*c)
@@ -86,5 +107,15 @@ impl<'a> fmt::Write for &'a GlobalLogger {
     #[inline]
     fn write_str(&mut self, s: &str) -> fmt::Result {
         self.log(s).ok_or(fmt::Error)
+    }
+}
+
+#[cfg(feature = "ufmt-write")]
+impl<'a> ufmt_write::uWrite for &'a GlobalLogger {
+    type Error = (); // TODO: return syscall error code here instead?
+
+    #[inline]
+    fn write_str(&mut self, s: &str) -> Result<(), Self::Error> {
+        self.log(s).ok_or(())
     }
 }
