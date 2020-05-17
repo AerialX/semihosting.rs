@@ -33,7 +33,7 @@ pub unsafe fn syscall<S: Into<usize>, T: Into<usize>>(syscall: S, message: T) ->
 
         let out: usize;
         #[cfg(feature = "unstable")]
-        asm!(syscall_asm!()
+        llvm_asm!(syscall_asm!()
             : "={r0}"(out)
             : "i"(SVC), "0"(syscall), "{r1}"(message)
             : "memory" , "lr"
@@ -55,7 +55,7 @@ pub unsafe fn syscall<S: Into<usize>, T: Into<usize>>(syscall: S, message: T) ->
         macro_rules! syscall_asm { () => { ".inst 0xBABC" } }; // HLT #0x3c
 
         #[cfg(feature = "unstable")]
-        asm!(syscall_asm!()
+        llvm_asm!(syscall_asm!()
             : "={r0}"(out)
             : "0"(syscall), "{r1}"(message)
             : "memory" , "lr"
