@@ -26,9 +26,9 @@ pub unsafe fn syscall<S: Into<usize>, T: Into<usize>>(syscall: S, message: T) ->
         #[cfg(thumb)]
         const SVC: usize = 0xab;
 
-        #[cfg(any(not(thumb), not(any(target = "thumbv6m-none-eabi", target = "thumbv7m-none-eabi"))))]
+        #[cfg(any(not(thumb), not(any(target = "thumbv6m-none-eabi", target = "thumbv7m-none-eabi", target = "thumbv8m.base-none-eabi"))))]
         macro_rules! syscall_asm { () => { "svc $1" } };
-        #[cfg(all(thumb, any(target = "thumbv6m-none-eabi", target = "thumbv7m-none-eabi")))]
+        #[cfg(all(thumb, any(target = "thumbv6m-none-eabi", target = "thumbv7m-none-eabi", target = "thumbv8m.base-none-eabi")))]
         macro_rules! syscall_asm { () => { "bkpt $1" } };
 
         let out: usize;
