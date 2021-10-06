@@ -1,4 +1,4 @@
-#![cfg_attr(feature = "unstable", feature(llvm_asm, core_intrinsics))]
+#![cfg_attr(feature = "unstable", feature(asm, core_intrinsics))]
 #![no_std]
 
 use core::num::NonZeroU32;

@@ -27,18 +27,13 @@ pub unsafe fn syscall<S: Into<usize>, T: Into<usize>>(syscall: S, message: T) ->
         const SVC: usize = 0xab;
 
         #[cfg(any(not(thumb), not(any(target = "thumbv6m-none-eabi", target = "thumbv7m-none-eabi", target = "thumbv8m.base-none-eabi"))))]
-        macro_rules! syscall_asm { () => { "svc $1" } };
+        macro_rules! syscall_asm { () => { "svc {svc}" } }
         #[cfg(all(thumb, any(target = "thumbv6m-none-eabi", target = "thumbv7m-none-eabi", target = "thumbv8m.base-none-eabi")))]
-        macro_rules! syscall_asm { () => { "bkpt $1" } };
+        macro_rules! syscall_asm { () => { "bkpt {svc}" } }
 
         let out: usize;
         #[cfg(feature = "unstable")]
-        llvm_asm!(syscall_asm!()
-            : "={r0}"(out)
-            : "i"(SVC), "0"(syscall), "{r1}"(message)
-            : "memory" , "lr"
-            : "volatile"
-        );
+        asm!(syscall_asm!(), svc = const SVC, inlateout("r0") syscall => out, in("r1") message, lateout("lr") _, options(preserves_flags));
         #[cfg(not(feature = "unstable"))]
         compile_error!("external asm unimplemented");
         out
@@ -55,12 +50,7 @@ pub unsafe fn syscall<S: Into<usize>, T: Into<usize>>(syscall: S, message: T) ->
         macro_rules! syscall_asm { () => { ".inst 0xBABC" } }; // HLT #0x3c
 
         #[cfg(feature = "unstable")]
-        llvm_asm!(syscall_asm!()
-            : "={r0}"(out)
-            : "0"(syscall), "{r1}"(message)
-            : "memory" , "lr"
-            : "volatile"
-        );
+        asm!(syscall_asm!(), inlateout("r0") syscall => out, in("r1") message, lateout("lr") _, options(preserves_flags));
         #[cfg(not(feature = "unstable"))]
         compile_error!("external asm unimplemented");
 
